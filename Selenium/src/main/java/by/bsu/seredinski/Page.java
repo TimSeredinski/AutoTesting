@@ -33,10 +33,11 @@ public class Page {
         destinationCity.submit();
         clickButton(passengers);
         clickButton(buttonToAddInfant);
+        System.out.println(error.getText());
         return error.getText();
     }
 
-    private void clickButton(WebElement element){
+    private void clickButton(WebElement element) {
         element.click();
     }
 
