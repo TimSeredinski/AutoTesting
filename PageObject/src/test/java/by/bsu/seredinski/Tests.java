@@ -1,5 +1,6 @@
 package by.bsu.seredinski;
 
+import by.bsu.seredinski.common.SearchDataParameters;
 import by.bsu.seredinski.step.PageSteps;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +12,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class Tests {
 
@@ -32,26 +32,67 @@ public class Tests {
 
     @Test
     public void bookingMoreThenOneInfantPerAdult() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("London");
+        data.setDestinationCity("Paris");
+        data.setNumOfAdults(0);
+        data.setNumOfInfant(2);
         String expectError = "It's not possible to book more than one infant ticket per adult";
-        assertEquals(expectError, page.tryToBookMoreThenOneInfantPerAdult());
+        assertEquals(expectError, page.tryToBookMoreThenOneInfantPerAdult(data));
     }
 
     @Test
-    public void findTicketWhenDepartureAirportIsEmpty(){
+    public void findTicketWhenDepartureAirportIsEmpty() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setDestinationCity("Paris");
+        data.setNumOfDaysFromNowInDepartureDate(1);
+        data.setNumOfDaysFromNowInReturnDate(1);
         String expectError = "Please enter a valid city, airport or country you're leaving from.";
-        assertEquals(expectError, page.getErrorWhenDepartureAirportIsEmpty());
+        assertEquals(expectError, page.getErrorWhenDepartureAirportIsEmpty(data));
     }
 
     @Test
-    public void isEmptyReturnDateWhenReturnDateIsEarlier(){
+    public void isEmptyReturnDateWhenReturnDateIsEarlier() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("Copenhagen");
+        data.setDestinationCity("London");
+        data.setNumOfDaysFromNowInDepartureDate(5);
+        data.setNumOfDaysFromNowInReturnDate(1);
         String expectError = "";
-        assertEquals(expectError, page.isChangeDepartureDateWhenReturnDateIsEarlier());
+        assertEquals(expectError, page.isChangeDepartureDateWhenReturnDateIsEarlier(data));
     }
 
     @Test
-    public void findTicketWhenTheSameAirports(){
+    public void findTicketWhenTheSameAirports() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("Copenhagen");
+        data.setDestinationCity("Copenhagen");
+        data.setNumOfDaysFromNowInDepartureDate(1);
+        data.setNumOfDaysFromNowInReturnDate(1);
         String expectError = "Please check your selected cities.";
-        assertEquals(expectError, page.getErrorWhenTheSameAirports());
+        assertEquals(expectError, page.getErrorWhenTheSameAirports(data));
+    }
+
+    @Test
+    public void stageOfRegistrationWhenAllFieldsAreCurrect() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("Copenhagen");
+        data.setDestinationCity("London");
+        data.setNumOfDaysFromNowInDepartureDate(1);
+        data.setNumOfDaysFromNowInReturnDate(1);
+        String expectStage = "1. Select flights";
+        assertEquals(expectStage, page.tryToFindFlightWithCurrentData(data));
+    }
+
+    @Test
+    public void secondStageOfRegistrationWhenAllFieldsAreCurrect() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("Copenhagen");
+        data.setDestinationCity("London");
+        data.setNumOfDaysFromNowInDepartureDate(2);
+        data.setNumOfDaysFromNowInReturnDate(9);
+        String expectStage = "This traveler will receive the receipt for the trip";
+        assertEquals(expectStage, page.tryToChooseTickets(data));
     }
 
     @After

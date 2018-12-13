@@ -27,20 +27,31 @@ public class Page {
 
     @FindBy(xpath = "//div[@class='input-set  large-6  medium-6 small-6  col inbound']")
     private WebElement returnCalendar;
+
     @FindBy(xpath = "//td[@class='valid-day']")
     private List<WebElement> availableDates;
+
     @FindBy(xpath = "//input[@id='Inbound']")
     private WebElement endDate;
-    @FindBy(xpath = "//p[@id='group-booking']/span")
-    private WebElement warning;
+
     @FindBy(id = "passengers")
     private WebElement passengers;
+
+    @FindBy(id = "cepAddAdult")
+    private WebElement buttonToAddAdult;
+
     @FindBy(id = "cepAddInfant")
     private WebElement buttonToAddInfant;
+
     @FindBy(xpath = "//div[@class='tool-tip-inner']/span")
     private WebElement error;
+
     @FindBy(xpath = "//div[@id='lpc-error']/p")
     private WebElement cityError;
+
+    @FindBy(xpath = "//p[@id='group-booking']/span")
+    private WebElement warning;
+
     @FindBy(xpath = "//button[@id='search-button']")
     private WebElement searchButton;
 
@@ -51,15 +62,15 @@ public class Page {
         PageFactory.initElements(driver, this);
     }
 
-    public Page selectDepartureAirport() {
+    //    public Page selectDepartureAirport(String str) {
+//        originCity.clear();
+//        originCity.sendKeys(str);
+//        return this;
+//    }
+    public void selectDepartureAirport(String str) {
         originCity.clear();
-        originCity.sendKeys("London");
-        return this;
-    }
-
-    public void selectReturnAirport() {
-        destinationCity.clear();
-        destinationCity.sendKeys("Paris");
+        originCity.sendKeys(str);
+        originCity.submit();
     }
 
     public void selectReturnAirport(String str) {
@@ -70,14 +81,14 @@ public class Page {
 
     public void selectDepartureDate(int numberOfDayFromNow) {
         departureCalendar.click();
-        action.moveToElement(availableDates.get(numberOfDayFromNow)).click().build().perform();
+        action.moveToElement(availableDates.get(numberOfDayFromNow)).doubleClick().build().perform();
         availableDates.get(numberOfDayFromNow - 1).click();
     }
 
     public void selectReturnDate(int numberOfDayFromNow) {
         returnCalendar.click();
-        action.moveToElement(availableDates.get(numberOfDayFromNow)).click().build().perform();
-        availableDates.get(numberOfDayFromNow - 1).click();
+        action.moveToElement(availableDates.get(numberOfDayFromNow)).doubleClick().build().perform();
+        availableDates.get(numberOfDayFromNow - 1).submit();
     }
 
     public String getEndDate() {
@@ -85,19 +96,21 @@ public class Page {
         return endDate.getText();
     }
 
-    public void setPassengers(int number) {
-        clickButton(number, passengers);
+
+    public void setAdults(int number) {
+        passengers.click();
+        for (int i = 0; i < number; i++) {
+            buttonToAddAdult.click();
+        }
     }
 
     public void setInfants(int number) {
-        clickButton(number, buttonToAddInfant);
-    }
-
-    private void clickButton(int number) {
+        passengers.click();
         for (int i = 0; i < number; i++) {
-            element.click();
+            buttonToAddInfant.click();
         }
     }
+
 
     public void clearFields() {
         originCity.clear();
@@ -116,11 +129,15 @@ public class Page {
         return checkVisibility(cityError).getText();
     }
 
+    public void clickSearch() {
+        checkVisibility(searchButton).submit();
+    }
+
     private WebElement checkVisibility(WebElement element) {
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    public void clickSearch(){
-        clickButton(2, searchButton);
+    private WebElement checkClickable(WebElement element){
+        return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 }
