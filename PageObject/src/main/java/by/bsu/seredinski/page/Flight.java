@@ -18,7 +18,7 @@ public class Flight {
     @FindBy(className = "receipt-info")
     private WebElement travelInfo;
 
-    @FindBy(id = "outboundF4")
+    @FindBy(className = "duration-bar-wrap")
     private WebElement outBoundFlight;
 
     @FindBy(id = "inboundF0")

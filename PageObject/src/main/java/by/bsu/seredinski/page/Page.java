@@ -1,5 +1,6 @@
 package by.bsu.seredinski.page;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -37,11 +38,17 @@ public class Page {
     @FindBy(id = "passengers")
     private WebElement passengers;
 
+    @FindBy(xpath = "//li[@class='book-youth']/a")
+    private WebElement buttonToChangeTypeOfPassengersToYouth;
+
     @FindBy(id = "cepAddAdult")
     private WebElement buttonToAddAdult;
 
     @FindBy(id = "cepAddInfant")
     private WebElement buttonToAddInfant;
+
+    @FindBy(id = "cepAddYouth")
+    private WebElement buttonToAddYouth;
 
     @FindBy(xpath = "//div[@class='tool-tip-inner']/span")
     private WebElement error;
@@ -51,6 +58,9 @@ public class Page {
 
     @FindBy(xpath = "//p[@id='group-booking']/span")
     private WebElement warning;
+
+    @FindBy(xpath = "//div[@class='cep-youth-disclaimer']")
+    private WebElement youthDisclaimer;
 
     @FindBy(xpath = "//button[@id='search-button']")
     private WebElement searchButton;
@@ -81,13 +91,13 @@ public class Page {
 
     public void selectDepartureDate(int numberOfDayFromNow) {
         departureCalendar.click();
-        action.moveToElement(availableDates.get(numberOfDayFromNow)).doubleClick().build().perform();
+        action.click(availableDates.get(numberOfDayFromNow));
         availableDates.get(numberOfDayFromNow - 1).click();
     }
 
     public void selectReturnDate(int numberOfDayFromNow) {
         returnCalendar.click();
-        action.moveToElement(availableDates.get(numberOfDayFromNow)).doubleClick().build().perform();
+        action.click(availableDates.get(numberOfDayFromNow)).perform();
         availableDates.get(numberOfDayFromNow - 1).submit();
     }
 
@@ -95,7 +105,6 @@ public class Page {
         returnCalendar.click();
         return endDate.getText();
     }
-
 
     public void setAdults(int number) {
         passengers.click();
@@ -111,6 +120,13 @@ public class Page {
         }
     }
 
+    public void setYouth(int number){
+        checkVisibility(passengers).click();
+        checkVisibility(buttonToChangeTypeOfPassengersToYouth).click();
+        for (int i = 0; i < number; i++) {
+            buttonToAddYouth.click();
+        }
+    }
 
     public void clearFields() {
         originCity.clear();
@@ -129,6 +145,10 @@ public class Page {
         return checkVisibility(cityError).getText();
     }
 
+    public String getYouthDisclaimer() {
+        return checkVisibility(youthDisclaimer).getText();
+    }
+
     public void clickSearch() {
         checkVisibility(searchButton).submit();
     }
@@ -137,7 +157,7 @@ public class Page {
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    private WebElement checkClickable(WebElement element){
+    private WebElement checkClickable(WebElement element) {
         return wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 }

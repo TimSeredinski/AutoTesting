@@ -22,6 +22,13 @@ public class PageSteps {
         return page.getWarning();
     }
 
+    public String tryToBookYouthsTickets(SearchDataParameters data){
+        page.selectDepartureAirport(data.getOriginCity());
+        page.selectReturnAirport(data.getDestinationCity());
+        page.setYouth(1);
+        return page.getYouthDisclaimer();
+    }
+
     public String getErrorWhenDepartureAirportIsEmpty(SearchDataParameters data) {
         page.clearFields();
         page.selectReturnAirport(data.getDestinationCity());

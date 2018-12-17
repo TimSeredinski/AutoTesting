@@ -52,6 +52,15 @@ public class Tests {
     }
 
     @Test
+    public void getInfoWhenBookYouthsTickets() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("London");
+        data.setDestinationCity("Paris");
+        String expectError = "Youth tickets can't be combined with other tickets and must be booked seperately.";
+        assertEquals(expectError, page.tryToBookYouthsTickets(data));
+    }
+
+    @Test
     public void isEmptyReturnDateWhenReturnDateIsEarlier() {
         SearchDataParameters data = new SearchDataParameters();
         data.setOriginCity("Copenhagen");
