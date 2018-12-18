@@ -15,6 +15,14 @@ public class PageSteps {
         flightPage = new Flight(driver);
     }
 
+    public String changeHomeAirport(SearchDataParameters data) {
+        page.setHomeAirport();
+        page.selectReturnAirport(data.getDestinationCity());
+        page.selectDepartureDate(data.getNumOfDaysFromNowInDepartureDate());
+        page.selectReturnDate(data.getNumOfDaysFromNowInReturnDate());
+        return flightPage.getFirstStage();
+    }
+
     public String tryToBookMoreThenOneInfantPerAdult(SearchDataParameters data) {
         page.selectDepartureAirport(data.getOriginCity());
         page.selectReturnAirport(data.getDestinationCity());
@@ -22,7 +30,7 @@ public class PageSteps {
         return page.getWarning();
     }
 
-    public String tryToBookYouthsTickets(SearchDataParameters data){
+    public String tryToBookYouthsTickets(SearchDataParameters data) {
         page.selectDepartureAirport(data.getOriginCity());
         page.selectReturnAirport(data.getDestinationCity());
         page.setYouth(1);
@@ -72,6 +80,20 @@ public class PageSteps {
         flightPage.chooseOutBoundFlight();
         flightPage.chooseInBoundFlight();
         return flightPage.getTravelInfo();
+    }
+
+    public boolean tryToFillTravelerData(SearchDataParameters data) {
+        page.selectDepartureAirport(data.getOriginCity());
+        page.selectReturnAirport(data.getDestinationCity());
+        page.selectDepartureDate(data.getNumOfDaysFromNowInDepartureDate());
+        page.selectReturnDate(data.getNumOfDaysFromNowInReturnDate());
+        flightPage.chooseOutBoundFlight();
+        flightPage.chooseInBoundFlight();
+        page.setFirstName(data.getFirstName());
+        page.setSurName(data.getSurName());
+        page.setEmail(data.getEmail());
+        page.setPhoneNumber(data.getPhoneNumber());
+        return page.checkRegisterButton();
     }
 
 }

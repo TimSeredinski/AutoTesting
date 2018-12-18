@@ -1,6 +1,5 @@
 package by.bsu.seredinski.page;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -22,6 +21,15 @@ public class Page {
 
     @FindBy(id = "destination")
     private WebElement destinationCity;
+
+    @FindBy(xpath = "//select[@id='airport']")
+    private WebElement home;
+
+    @FindBy(xpath = "//option[@value='ABZ']")
+    private WebElement homeAirport;
+
+    @FindBy(xpath = "//span[class='city-name']")
+    private WebElement cityOfHomeAirport;
 
     @FindBy(xpath = "//div[@class='input-set  large-6  medium-6 small-6  col outbound']")
     private WebElement departureCalendar;
@@ -50,6 +58,9 @@ public class Page {
     @FindBy(id = "cepAddYouth")
     private WebElement buttonToAddYouth;
 
+    @FindBy(xpath = "//button[@class='btn primary medium large-12 medium-12 mrgn-b-20 pull-left']")
+    private WebElement buttonToChangeHomeAirport;
+
     @FindBy(xpath = "//div[@class='tool-tip-inner']/span")
     private WebElement error;
 
@@ -65,6 +76,21 @@ public class Page {
     @FindBy(xpath = "//button[@id='search-button']")
     private WebElement searchButton;
 
+    @FindBy(xpath = "//input[@id='firstName_ADT0']")
+    private WebElement travelerFirstName;
+
+    @FindBy(xpath = "//input[@id='lastName_ADT0']")
+    private WebElement travelerSurName;
+
+    @FindBy(xpath = "//input[@id='email_ADT0']")
+    private WebElement email;
+
+    @FindBy(xpath = "//input[@id='mobile_ADT0']")
+    private WebElement phoneNumber;
+
+    @FindBy(xpath = "//button[@id='eb-signup-btn']")
+    private WebElement registerButton;
+
     public Page(WebDriver driver) {
         webDriver = driver;
         wait = new WebDriverWait(driver, 10);
@@ -72,11 +98,12 @@ public class Page {
         PageFactory.initElements(driver, this);
     }
 
-    //    public Page selectDepartureAirport(String str) {
-//        originCity.clear();
-//        originCity.sendKeys(str);
-//        return this;
-//    }
+    public void setHomeAirport() {
+        home.click();
+        checkVisibility(homeAirport).click();
+        buttonToChangeHomeAirport.click();
+    }
+
     public void selectDepartureAirport(String str) {
         originCity.clear();
         originCity.sendKeys(str);
@@ -120,7 +147,7 @@ public class Page {
         }
     }
 
-    public void setYouth(int number){
+    public void setYouth(int number) {
         checkVisibility(passengers).click();
         checkVisibility(buttonToChangeTypeOfPassengersToYouth).click();
         for (int i = 0; i < number; i++) {
@@ -133,12 +160,36 @@ public class Page {
         destinationCity.clear();
     }
 
+    public void setFirstName(String str) {
+        travelerFirstName.clear();
+        travelerFirstName.sendKeys(str);
+        travelerFirstName.submit();
+    }
+
+    public void setSurName(String str) {
+        travelerSurName.clear();
+        checkVisibility(travelerSurName).sendKeys(str);
+        travelerSurName.submit();
+    }
+
+    public void setEmail(String str) {
+        email.clear();
+        checkVisibility(email).sendKeys(str);
+        email.submit();
+    }
+
+    public void setPhoneNumber(String str) {
+        phoneNumber.clear();
+        checkVisibility(phoneNumber).sendKeys(str);
+        phoneNumber.submit();
+    }
+
     public String getWarning() {
         return checkVisibility(warning).getText();
     }
 
     public String getError() {
-        return error.getText();
+        return checkVisibility(error).getText();
     }
 
     public String getCityError() {
@@ -149,8 +200,16 @@ public class Page {
         return checkVisibility(youthDisclaimer).getText();
     }
 
+    public String getCityOfHomeAirport() {
+        return originCity.getText();
+    }
+
     public void clickSearch() {
         checkVisibility(searchButton).submit();
+    }
+
+    public boolean checkRegisterButton() {
+        return checkVisibility(registerButton).isDisplayed();
     }
 
     private WebElement checkVisibility(WebElement element) {

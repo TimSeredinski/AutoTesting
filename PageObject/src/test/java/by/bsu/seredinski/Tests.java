@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class Tests {
 
@@ -35,10 +36,19 @@ public class Tests {
         SearchDataParameters data = new SearchDataParameters();
         data.setOriginCity("London");
         data.setDestinationCity("Paris");
-        data.setNumOfAdults(0);
-        data.setNumOfInfant(2);
+        data.setNumOfInfant(1);
         String expectError = "It's not possible to book more than one infant ticket per adult";
         assertEquals(expectError, page.tryToBookMoreThenOneInfantPerAdult(data));
+    }
+
+    @Test
+    public void getHomeAirportWhenChangeHomePlace() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setDestinationCity("Copenhagen");
+        data.setNumOfDaysFromNowInDepartureDate(1);
+        data.setNumOfDaysFromNowInReturnDate(1);
+        String expectStage = "1. Select flights";
+        assertEquals(expectStage, page.changeHomeAirport(data));
     }
 
     @Test
@@ -102,6 +112,20 @@ public class Tests {
         data.setNumOfDaysFromNowInReturnDate(9);
         String expectStage = "This traveler will receive the receipt for the trip";
         assertEquals(expectStage, page.tryToChooseTickets(data));
+    }
+
+    @Test
+    public void fillPersonDataWithoutGender() {
+        SearchDataParameters data = new SearchDataParameters();
+        data.setOriginCity("Copenhagen");
+        data.setDestinationCity("London");
+        data.setNumOfDaysFromNowInDepartureDate(2);
+        data.setNumOfDaysFromNowInReturnDate(9);
+        data.setFirstName("John");
+        data.setSurName("Smith");
+        data.setEmail("john.smith@gmail.com");
+        data.setPhoneNumber("+375291234567");
+        assertTrue(page.tryToFillTravelerData(data));
     }
 
     @After
